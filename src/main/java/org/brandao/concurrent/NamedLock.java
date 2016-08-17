@@ -25,13 +25,13 @@ import java.util.concurrent.locks.ReentrantLock;
  * <pre>
  * ex:
  * 
- *    NamedLock namedLock = new NamedLock();
- *    Serializable lock = namedLock.lock("meu_identificador");
+ *    NamedLock namedLock = ...;
+ *    Serializable refLock = namedLock.lock("nome_do_lock");
  *    try{
- *       //instruções protegidas pelo bloqueio
+ *       //ações protegidas pelo bloqueio.
  *    }
  *    finally{
- *       namedLock.unlock(lock, "meu_identificador");
+ *       namedLock.unlock(refLock, "nome_do_lock");
  *    }
  *    
  * </pre>
@@ -70,6 +70,19 @@ public class NamedLock {
 	
 	/**
 	 * Adquire um bloqueio com um determinado nome.
+	 * 
+	 * <p>Um uso típico desse método seria:
+	 * <pre>
+	 *     NamedLock namedLock = ...;
+	 *     Serializable lockRef = namedLock.lock("nome_do_lock");
+	 *     try{
+	 *         //ações protegidas pelo bloqueio.
+	 *     }
+	 *     finally{
+	 *         namedLock.unlock(lockRef, "nome_do_lock");
+	 *     }
+	 * </pre>
+	 * </p>
 	 * @param lockName nome do bloqueio.
 	 * @return identificação única do bloqueio associado ao nome.
 	 */
@@ -85,6 +98,17 @@ public class NamedLock {
 
 	/**
 	 * Adquire um bloqueio com um determinado nome a menos que a thread atual for interrompida.
+	 * <p>Um uso típico desse método seria:
+	 * <pre>
+	 *     NamedLock namedLock = ...;
+	 *     Serializable lockRef = namedLock.lockInterruptibly("nome_do_lock");
+	 *     try{
+	 *         //ações protegidas pelo bloqueio.
+	 *     }
+	 *     finally{
+	 *         namedLock.unlock(lockRef, "nome_do_lock");
+	 *     }
+	 * </pre>
 	 * @param lockName nome do bloqueio.
 	 * @return identificação única do bloqueio associado ao nome.
 	 * @throws InterruptedException Lançada se a thread atual for interrompida enquanto se está tentando
@@ -101,6 +125,22 @@ public class NamedLock {
 
     /**
      * Tenta adquirir o bloqueio somente se ele estiver livre no momento da invocação.
+	 * <p>Um uso típico desse método seria:
+	 * <pre>
+	 *     NamedLock namedLock = ...;
+	 *     Serializable lockRef;
+	 *     if((lockRef = namedLock.tryLock("nome_do_lock")) != null){
+	 *         try{
+	 *             //ações protegidas pelo bloqueio.
+	 *          }
+	 *     	    finally{
+	 *     	        namedLock.unlock(lockRef, "nome_do_lock");
+	 *          }
+	 *     }
+	 *     else{
+	 *         //ações alternativas.
+	 *     }
+	 * </pre>
 	 * @param lockName nome do bloqueio.
 	 * @return identificação única do bloqueio associado ao nome.
      */
@@ -121,6 +161,22 @@ public class NamedLock {
 	/**
      * Tenta adquirir o bloqueio somente se ele estiver livre dentro de um determinado 
      * prazo de tempo e a thread atual não for interrompida.
+	 * <p>Um uso típico desse método seria:
+	 * <pre>
+	 *     NamedLock namedLock = ...;
+	 *     Serializable lockRef;
+	 *     if((lockRef = namedLock.tryLock("nome_do_lock", 1200, TimeUnit.MILLISECONDS)) != null){
+	 *         try{
+	 *             //ações protegidas pelo bloqueio.
+	 *          }
+	 *     	    finally{
+	 *     	        namedLock.unlock(lockRef, "nome_do_lock");
+	 *          }
+	 *     }
+	 *     else{
+	 *         //ações alternativas.
+	 *     }
+	 * </pre>
 	 * @param lockName nome do bloqueio.
 	 * @param time tempo mázimo de espera para adquirir o bloqueio.
 	 * @param unit unidade de tempo do argumento {@code time}.
@@ -155,6 +211,11 @@ public class NamedLock {
 		}
 	}
 	
+	/**
+	 * Libera o bloqueio com um determinado nome e referência.
+	 * @param ref identificação única do bloqueio associado ao nome.
+	 * @param lockName nome do bloqueio.
+	 */
 	public void unlock(Serializable ref, String lockName){
 		Lock lock = this.locks.get(lockName);
 		
