@@ -120,7 +120,17 @@ public class NamedLock {
 		UUID ref  = UUID.randomUUID();
 		Lock lock = this.getLock(ref, lockName);
 		
-		lock.lockInterruptibly();
+		try{
+			lock.lockInterruptibly();
+		}
+		catch(InterruptedException e){
+			this.releaseLock(ref, lockName);
+			throw e;
+		}
+		catch(Throwable e){
+			this.releaseLock(ref, lockName);
+			throw new InterruptedException("bug: " + e.toString());
+		}
 		
 		return ref;
     }

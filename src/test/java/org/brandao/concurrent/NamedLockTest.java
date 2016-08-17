@@ -329,8 +329,9 @@ public class NamedLockTest extends TestCase{
 		TestCase.assertEquals(0, namedLock.origins.size());
 		
 		TestCase.assertEquals(1, queue.size());
-		TestCase.assertEquals(new Integer(1), queue.get(1));
+		TestCase.assertEquals(new Integer(1), queue.get(0));
 		TestCase.assertTrue(task.getError() instanceof InterruptedException);
 		
-	}	
+	}
+	
 }
