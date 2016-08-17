@@ -46,6 +46,8 @@ public class NamedLock {
 	 * da instância do Lock.
 	 * Um contador não pode ser usado porque assim não seria possível identificar a origem e fazer
 	 * a liberação da instância do Lock de forma segura. 
+	 * Usando a estratégia de armazenar a referência consome-se mais memória em relação ao uso de um
+	 * contador, mas nesse caso o mais importante é a confiabilidade.
 	 */
 	protected Map<String,Set<UUID>> origins;
 
@@ -97,7 +99,7 @@ public class NamedLock {
 	}
 
 	/**
-	 * Adquire um bloqueio com um determinado nome a menos que a thread atual for interrompida.
+	 * Adquire um bloqueio com um determinado nome a menos que a thread atual seja interrompida.
 	 * <p>Um uso típico desse método seria:
 	 * <pre>
 	 *     NamedLock namedLock = ...;

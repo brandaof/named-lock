@@ -46,6 +46,46 @@ public class NamedLockHelper {
 		
 	}
 	
+	public static class AsyncLockInterruptibly extends Thread{
+		
+		private NamedLock namedLock;
+		
+		private String lockName;
+		
+		private Throwable error;
+		
+		private List<Integer> queue;
+		
+		public AsyncLockInterruptibly(NamedLock namedLock, 
+				String lockName, List<Integer> queue){
+			this.namedLock     = namedLock;
+			this.lockName      = lockName;
+			this.queue         = queue;
+		}
+		
+		public void run(){
+			try{
+				Serializable ref = namedLock.lockInterruptibly(this.lockName);
+				try{
+					this.queue.add(2);
+				}
+				finally{
+					namedLock.unlock(ref, this.lockName);
+				}
+			
+				this.error = null;
+			}
+			catch(Throwable e){
+				error = e;
+				e.printStackTrace();
+			}
+		}
+
+		public Throwable getError() {
+			return error;
+		}
+		
+	}	
 	public static class AsyncTryLock extends Thread{
 		
 		private NamedLock namedLock;
