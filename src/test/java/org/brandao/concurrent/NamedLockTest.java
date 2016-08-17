@@ -236,4 +236,101 @@ public class NamedLockTest extends TestCase{
 		
 	}
 	
+	public void testSimpleLockInterruptibly() throws InterruptedException{
+		
+		List<Integer> queue = new ArrayList<Integer>();
+		NamedLock namedLock = new NamedLock();
+		
+		Serializable ref = namedLock.lock("teste");
+		NamedLockHelper.AsyncLockInterruptibly task = 
+				new NamedLockHelper.AsyncLockInterruptibly(namedLock, "teste", queue);
+		Thread th = new Thread(task);
+		try{
+			th.start();
+			Thread.sleep(2000);
+			queue.add(1);
+		}
+		finally{
+			namedLock.unlock(ref, "teste");
+		}
+		
+		Thread.sleep(2000);
+		
+		TestCase.assertNull(namedLock.locks.get("teste"));
+		TestCase.assertNull(namedLock.origins.get("teste"));
+		
+		TestCase.assertEquals(0, namedLock.locks.size());
+		TestCase.assertEquals(0, namedLock.origins.size());
+		
+		TestCase.assertEquals(2, queue.size());
+		TestCase.assertEquals(new Integer(1), queue.get(0));
+		TestCase.assertEquals(new Integer(2), queue.get(1));
+		
+	}
+	
+	public void testMultipleLockInterruptibly() throws InterruptedException{
+		
+		List<Integer> queue = new ArrayList<Integer>();
+		NamedLock namedLock = new NamedLock();
+		
+		Serializable ref = namedLock.lock("teste");
+		NamedLockHelper.AsyncLockInterruptibly task = 
+				new NamedLockHelper.AsyncLockInterruptibly(namedLock, "teste2", queue);
+		Thread th = new Thread(task);
+		try{
+			th.start();
+			Thread.sleep(2000);
+			queue.add(1);
+		}
+		finally{
+			namedLock.unlock(ref, "teste");
+		}
+		
+		Thread.sleep(2000);
+		
+		TestCase.assertNull(namedLock.locks.get("teste"));
+		TestCase.assertNull(namedLock.origins.get("teste"));
+		
+		TestCase.assertEquals(0, namedLock.locks.size());
+		TestCase.assertEquals(0, namedLock.origins.size());
+		
+		TestCase.assertEquals(2, queue.size());
+		TestCase.assertEquals(new Integer(2), queue.get(0));
+		TestCase.assertEquals(new Integer(1), queue.get(1));
+		
+	}
+	
+	public void testSimpleLockInterruptiblyError() throws InterruptedException{
+		
+		List<Integer> queue = new ArrayList<Integer>();
+		NamedLock namedLock = new NamedLock();
+		
+		Serializable ref = namedLock.lock("teste");
+		NamedLockHelper.AsyncLockInterruptibly task = 
+				new NamedLockHelper.AsyncLockInterruptibly(namedLock, "teste", queue);
+		Thread th = new Thread(task);
+		try{
+			th.start();
+			Thread.sleep(2000);
+			th.interrupt();
+			Thread.sleep(2000);
+			queue.add(1);
+		}
+		finally{
+			namedLock.unlock(ref, "teste");
+		}
+		
+		Thread.sleep(2000);
+		
+		TestCase.assertNull(namedLock.locks.get("teste"));
+		TestCase.assertNull(namedLock.origins.get("teste"));
+		
+		TestCase.assertEquals(0, namedLock.locks.size());
+		TestCase.assertEquals(0, namedLock.origins.size());
+		
+		TestCase.assertEquals(1, queue.size());
+		TestCase.assertEquals(new Integer(1), queue.get(1));
+		TestCase.assertTrue(task.getError() instanceof InterruptedException);
+		
+	}	
 }
