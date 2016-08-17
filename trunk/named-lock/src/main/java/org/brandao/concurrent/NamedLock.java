@@ -42,10 +42,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public class NamedLock {
 
 	/**
-	 * A referência de um bloqueio é necessário para se evitar problemas de sincronia na liberação 
-	 * da instância do Lock.
-	 * Um contador não pode ser usado porque assim não seria possível identificar a origem e fazer
-	 * a liberação da instância do Lock de forma segura. 
+	 * A referência de um bloqueio é necessário para se evitar problemas de sincronização na liberação 
+	 * da instância de um {@link Lock}.
+	 * <p>Um contador não pode ser usado porque assim não seria possível identificar a origem e fazer
+	 * a liberação da instância do {@link Lock} de forma segura.</p> 
 	 * Usando a estratégia de armazenar a referência consome-se mais memória em relação ao uso de um
 	 * contador, mas nesse caso o mais importante é a confiabilidade.
 	 */
@@ -57,7 +57,7 @@ public class NamedLock {
 	protected Map<String,Lock> locks;
 
 	/**
-	 * Lock global usado para sincronizar a aquisição e liberação dos Locks reais.
+	 * Bloqueio global usado para sincronizar a aquisição e liberação dos bloqueios reais.
 	 */
 	protected Lock _lock;
 	
@@ -190,10 +190,10 @@ public class NamedLock {
 	 *     }
 	 * </pre>
 	 * @param lockName nome do bloqueio.
-	 * @param time tempo mázimo de espera para adquirir o bloqueio.
+	 * @param time tempo máximo de espera para adquirir o bloqueio.
 	 * @param unit unidade de tempo do argumento {@code time}.
 	 * @return identificação única do bloqueio associado ao nome ou <code>null</code> se 
-	 * o bloqueio não for.
+	 * o bloqueio não for obtido dentro do prazo determinado.
 	 * @throws InterruptedException Lançada se a thread atual for interrompida enquanto se está tentando
 	 * obter o bloqueio.
 	 */
