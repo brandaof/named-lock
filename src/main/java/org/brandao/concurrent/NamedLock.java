@@ -47,17 +47,17 @@ public class NamedLock {
 	 * Um contador não pode ser usado porque assim não seria possível identificar a origem e fazer
 	 * a liberação da instância do Lock de forma segura. 
 	 */
-	private Map<String,Set<UUID>> origins;
+	protected Map<String,Set<UUID>> origins;
 
 	/**
 	 * Lock associado a um determinado nome.
 	 */
-	private Map<String,Lock> locks;
+	protected Map<String,Lock> locks;
 
 	/**
 	 * Lock global usado para sincronizar a aquisição e liberação dos Locks reais.
 	 */
-	private Lock _lock;
+	protected Lock _lock;
 	
 	/**
 	 * Cria uma nova instância.
@@ -245,6 +245,7 @@ public class NamedLock {
 				lock = new ReentrantLock();
 				this.locks.put(lockName, lock);
 			}
+			originSet.add(ref);
 			return lock;
 		}
 		finally{
@@ -264,13 +265,18 @@ public class NamedLock {
 			if(!originSet.remove(ref)){
 				throw new IllegalStateException("lock reference not found: " + lockName + ": " + ref);
 			}
+
+			if(originSet.isEmpty()){
+				 if(this.locks.remove(lockName) != null){
+				 	if(this.origins.remove(lockName) == null){
+						 throw new IllegalStateException("origins can not be empty: " + lockName + ": " + ref);
+				 	}
+				 }
+				 else{
+					 throw new IllegalStateException("lock not found: " + lockName + ": " + ref);
+				 }
+			}
 			
-			if(originSet.isEmpty() && this.locks.remove(lockName) == null){
-				throw new IllegalStateException("lock not found: " + lockName + ": " + ref);
-			}
-			else{
-				this.origins.remove(lockName);
-			}
 		}
 		finally{
 			_lock.unlock();

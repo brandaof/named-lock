@@ -3,6 +3,7 @@ package org.brandao.concurrent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
@@ -10,128 +11,127 @@ public class NamedLockTest extends TestCase{
 
 	public void testSimpleLock() throws InterruptedException{
 		
-		final List<Integer> result = new ArrayList<Integer>();
+		List<Integer> queue = new ArrayList<Integer>();
+		NamedLock namedLock = new NamedLock();
 		
-		final NamedLock namedLock = new NamedLock();
-		
-		Thread th = new Thread(){
-			
-			public void run(){
-				try{
-					Thread.sleep(2000);
-					Serializable ref = namedLock.lock("teste");
-					try{
-						result.add(2);
-					}
-					finally{
-						namedLock.unlock(ref, "teste");
-					}
-					
-				}
-				catch(Throwable e){
-					e.printStackTrace();
-				}
-			}
-			
-		};
-		
-		th.start();
 		Serializable ref = namedLock.lock("teste");
 		try{
-			Thread.sleep(5000);
-			result.add(1);
+			new Thread(new NamedLockHelper.AsyncLock(namedLock, "teste", queue)).start();
+			Thread.sleep(2000);
+			queue.add(1);
 		}
 		finally{
 			namedLock.unlock(ref, "teste");
 		}
 		
-		Thread.sleep(2000);
+		Thread.sleep(1000);
 		
-		TestCase.assertEquals(2, result.size());
-		TestCase.assertEquals(new Integer(1), result.get(0));
-		TestCase.assertEquals(new Integer(2), result.get(0));
+		TestCase.assertNull(namedLock.locks.get("teste"));
+		TestCase.assertNull(namedLock.origins.get("teste"));
+		
+		TestCase.assertEquals(0, namedLock.locks.size());
+		TestCase.assertEquals(0, namedLock.origins.size());
+		
+		TestCase.assertEquals(2, queue.size());
+		TestCase.assertEquals(new Integer(1), queue.get(0));
+		TestCase.assertEquals(new Integer(2), queue.get(1));
 	}
 	
 	
 	public void testMultipleLock() throws InterruptedException{
 		
-		final List<Integer> result = new ArrayList<Integer>();
+		List<Integer> queue = new ArrayList<Integer>();
+		NamedLock namedLock = new NamedLock();
 		
-		final NamedLock namedLock = new NamedLock();
-		
-		Thread th = new Thread(){
-			
-			public void run(){
-				try{
-					Thread.sleep(2000);
-					Serializable ref = namedLock.lock("teste2");
-					try{
-						result.add(2);
-					}
-					finally{
-						namedLock.unlock(ref, "teste2");
-					}
-					
-				}
-				catch(Throwable e){
-					e.printStackTrace();
-				}
-			}
-			
-		};
-		
-		th.start();
 		Serializable ref = namedLock.lock("teste");
 		try{
-			Thread.sleep(5000);
-			result.add(1);
+			new Thread(new NamedLockHelper.AsyncLock(namedLock, "teste2", queue)).start();
+			Thread.sleep(2000);
+			queue.add(1);
 		}
 		finally{
 			namedLock.unlock(ref, "teste");
 		}
 		
-		Thread.sleep(2000);
+		Thread.sleep(1000);
 		
-		TestCase.assertEquals(2, result.size());
-		TestCase.assertEquals(new Integer(2), result.get(0));
-		TestCase.assertEquals(new Integer(1), result.get(0));
+		TestCase.assertNull(namedLock.locks.get("teste"));
+		TestCase.assertNull(namedLock.origins.get("teste"));
+		
+		TestCase.assertEquals(0, namedLock.locks.size());
+		TestCase.assertEquals(0, namedLock.origins.size());
+		
+		TestCase.assertEquals(2, queue.size());
+		TestCase.assertEquals(new Integer(2), queue.get(0));
+		TestCase.assertEquals(new Integer(1), queue.get(1));
 	}
 	
 	public void testSimpleTryLock() throws InterruptedException{
 		
-		final List<Integer> result = new ArrayList<Integer>();
+		List<Integer> queue = new ArrayList<Integer>();
+		NamedLock namedLock = new NamedLock();
 		
-		final NamedLock namedLock = new NamedLock();
-		
-		Thread th = new Thread(){
-			
-			public void run(){
-				try{
-					Thread.sleep(2000);
-					Serializable ref = namedLock.tryLock("teste");
-					try{
-						if(ref == null)
-							result.add(3);
-						else
-							result.add(2);
-					}
-					finally{
-						namedLock.unlock(ref, "teste");
-					}
-					
-				}
-				catch(Throwable e){
-					e.printStackTrace();
-				}
-			}
-			
-		};
-		
-		th.start();
-		Serializable ref = namedLock.tryLock("teste");
+		Serializable ref = namedLock.lock("teste");
 		try{
-			Thread.sleep(5000);
-			result.add(1);
+			new Thread(new NamedLockHelper.AsyncTryLock(namedLock, "teste", queue)).start();
+			Thread.sleep(2000);
+			queue.add(1);
+		}
+		finally{
+			namedLock.unlock(ref, "teste");
+		}
+		
+		Thread.sleep(1000);
+		
+		TestCase.assertNull(namedLock.locks.get("teste"));
+		TestCase.assertNull(namedLock.origins.get("teste"));
+		
+		TestCase.assertEquals(0, namedLock.locks.size());
+		TestCase.assertEquals(0, namedLock.origins.size());
+		
+		TestCase.assertEquals(2, queue.size());
+		TestCase.assertEquals(new Integer(3), queue.get(0));
+		TestCase.assertEquals(new Integer(1), queue.get(1));
+	}
+	
+	public void testMultipleTryLock() throws InterruptedException{
+		
+		List<Integer> queue = new ArrayList<Integer>();
+		NamedLock namedLock = new NamedLock();
+		
+		Serializable ref = namedLock.lock("teste");
+		try{
+			new Thread(new NamedLockHelper.AsyncTryLock(namedLock, "teste2", queue)).start();
+			Thread.sleep(2000);
+			queue.add(1);
+		}
+		finally{
+			namedLock.unlock(ref, "teste");
+		}
+		
+		Thread.sleep(1000);
+		
+		TestCase.assertNull(namedLock.locks.get("teste"));
+		TestCase.assertNull(namedLock.origins.get("teste"));
+		
+		TestCase.assertEquals(0, namedLock.locks.size());
+		TestCase.assertEquals(0, namedLock.origins.size());
+		
+		TestCase.assertEquals(2, queue.size());
+		TestCase.assertEquals(new Integer(2), queue.get(0));
+		TestCase.assertEquals(new Integer(1), queue.get(1));
+	}
+
+	public void testSimpleTryLockTime() throws InterruptedException{
+		
+		List<Integer> queue = new ArrayList<Integer>();
+		NamedLock namedLock = new NamedLock();
+		
+		Serializable ref = namedLock.lock("teste");
+		try{
+			new Thread(new NamedLockHelper.AsyncTryLockTime(namedLock, "teste", queue, 3000, TimeUnit.MILLISECONDS)).start();
+			Thread.sleep(2000);
+			queue.add(1);
 		}
 		finally{
 			namedLock.unlock(ref, "teste");
@@ -139,9 +139,101 @@ public class NamedLockTest extends TestCase{
 		
 		Thread.sleep(2000);
 		
-		TestCase.assertEquals(2, result.size());
-		TestCase.assertEquals(new Integer(3), result.get(0));
-		TestCase.assertEquals(new Integer(1), result.get(0));
+		TestCase.assertNull(namedLock.locks.get("teste"));
+		TestCase.assertNull(namedLock.origins.get("teste"));
+		
+		TestCase.assertEquals(0, namedLock.locks.size());
+		TestCase.assertEquals(0, namedLock.origins.size());
+		
+		TestCase.assertEquals(2, queue.size());
+		TestCase.assertEquals(new Integer(1), queue.get(0));
+		TestCase.assertEquals(new Integer(2), queue.get(1));
+	}
+	
+	public void testMultipleTryLockTime() throws InterruptedException{
+		
+		List<Integer> queue = new ArrayList<Integer>();
+		NamedLock namedLock = new NamedLock();
+		
+		Serializable ref = namedLock.lock("teste");
+		try{
+			new Thread(new NamedLockHelper.AsyncTryLockTime(namedLock, "teste2", queue, 3000, TimeUnit.MILLISECONDS)).start();
+			Thread.sleep(2000);
+			queue.add(1);
+		}
+		finally{
+			namedLock.unlock(ref, "teste");
+		}
+		
+		Thread.sleep(2000);
+		
+		TestCase.assertNull(namedLock.locks.get("teste"));
+		TestCase.assertNull(namedLock.origins.get("teste"));
+		
+		TestCase.assertEquals(0, namedLock.locks.size());
+		TestCase.assertEquals(0, namedLock.origins.size());
+		
+		TestCase.assertEquals(2, queue.size());
+		TestCase.assertEquals(new Integer(2), queue.get(0));
+		TestCase.assertEquals(new Integer(1), queue.get(1));
+		
+	}
+
+	public void testSimpleTryLockTimeNotSuccess() throws InterruptedException{
+		
+		List<Integer> queue = new ArrayList<Integer>();
+		NamedLock namedLock = new NamedLock();
+		
+		Serializable ref = namedLock.lock("teste");
+		try{
+			new Thread(new NamedLockHelper.AsyncTryLockTime(namedLock, "teste", queue, 500, TimeUnit.MILLISECONDS)).start();
+			Thread.sleep(2000);
+			queue.add(1);
+		}
+		finally{
+			namedLock.unlock(ref, "teste");
+		}
+		
+		Thread.sleep(2000);
+		
+		TestCase.assertNull(namedLock.locks.get("teste"));
+		TestCase.assertNull(namedLock.origins.get("teste"));
+		
+		TestCase.assertEquals(0, namedLock.locks.size());
+		TestCase.assertEquals(0, namedLock.origins.size());
+		
+		TestCase.assertEquals(2, queue.size());
+		TestCase.assertEquals(new Integer(3), queue.get(0));
+		TestCase.assertEquals(new Integer(1), queue.get(1));
+	}
+	
+	public void testMultipleTryLockTimeNotSuccess() throws InterruptedException{
+		
+		List<Integer> queue = new ArrayList<Integer>();
+		NamedLock namedLock = new NamedLock();
+		
+		Serializable ref = namedLock.lock("teste");
+		try{
+			new Thread(new NamedLockHelper.AsyncTryLockTime(namedLock, "teste2", queue, 500, TimeUnit.MILLISECONDS)).start();
+			Thread.sleep(2000);
+			queue.add(1);
+		}
+		finally{
+			namedLock.unlock(ref, "teste");
+		}
+		
+		Thread.sleep(2000);
+		
+		TestCase.assertNull(namedLock.locks.get("teste"));
+		TestCase.assertNull(namedLock.origins.get("teste"));
+		
+		TestCase.assertEquals(0, namedLock.locks.size());
+		TestCase.assertEquals(0, namedLock.origins.size());
+		
+		TestCase.assertEquals(2, queue.size());
+		TestCase.assertEquals(new Integer(2), queue.get(0));
+		TestCase.assertEquals(new Integer(1), queue.get(1));
+		
 	}
 	
 }
