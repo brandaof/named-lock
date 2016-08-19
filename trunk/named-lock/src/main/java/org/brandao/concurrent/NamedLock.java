@@ -1,5 +1,5 @@
 /*
- * jBRGates http://namedlock.brandao.org/
+ * Named Lock http://namedlock.brandao.org/
  * Copyright (C) 2006-2016 Afonso Brandao. (afonso.rbn@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
