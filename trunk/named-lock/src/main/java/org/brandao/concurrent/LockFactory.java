@@ -29,7 +29,7 @@ public abstract class LockFactory<T> {
 	}
 	
 	/**
-	 * Obtém a instância do bloqueador do tipo {@link Lock} associado à chave.
+	 * Obtém o bloqueador do tipo {@link Lock} associado à chave.
 	 * @param key chave associada ao bloqueador do tipo {@link Lock}.
 	 * @return instância do bloqueador do tipo {@link Lock} associado à chave.
 	 */
@@ -38,7 +38,7 @@ public abstract class LockFactory<T> {
 	}
 
 	/**
-	 * Obtém a instância do bloqueador do tipo {@link ReadWriteLock} associado à chave.
+	 * Obtém o bloqueador do tipo {@link ReadWriteLock} associado à chave.
 	 * @param key chave associada ao bloqueador do tipo {@link ReadWriteLock}.
 	 * @return instância do bloqueador do tipo {@link ReadWriteLock} associado à chave.
 	 */

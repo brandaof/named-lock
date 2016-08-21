@@ -19,8 +19,6 @@ package org.brandao.concurrent;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.brandao.concurrent.DisposableSingletonContext.ObjectFactory;
-
 class LockObjectFactory 
 	implements ObjectFactory{
 
