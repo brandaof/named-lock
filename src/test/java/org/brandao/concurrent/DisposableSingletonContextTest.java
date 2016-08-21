@@ -9,7 +9,7 @@ import org.brandao.concurrent.DisposableSingletonContext.ObjectHandler;
 
 public class DisposableSingletonContextTest extends TestCase{
 
-	public void testCreate(){
+	public void testCreate() throws InterruptedException{
 		DisposableSingletonContext<String> context = 
 				new DisposableSingletonContext<String>();
 		context.registryBeanDefinition("teste", new ObjectFactory() {
@@ -43,6 +43,8 @@ public class DisposableSingletonContextTest extends TestCase{
 		
 		Runtime.getRuntime().gc();
 
+		Thread.sleep(2000);
+		
 		a = context.getBean("A", "teste");
 		
 		Object newAHandler = ((ObjectHandler) Proxy.getInvocationHandler(a)).object;
@@ -103,6 +105,8 @@ public class DisposableSingletonContextTest extends TestCase{
 		
 		Runtime.getRuntime().gc();
 
+		Thread.sleep(2000);
+		
 		Object a = context.getBean("A", "teste");
 		
 		Object reference = ((ObjectHandler) Proxy.getInvocationHandler(a)).object;
