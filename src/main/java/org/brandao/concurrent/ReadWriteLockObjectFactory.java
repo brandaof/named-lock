@@ -19,8 +19,6 @@ package org.brandao.concurrent;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.brandao.concurrent.DisposableSingletonContext.ObjectFactory;
-
 class ReadWriteLockObjectFactory  
 	implements ObjectFactory{
 
