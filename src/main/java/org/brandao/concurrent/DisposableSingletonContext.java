@@ -17,6 +17,7 @@
 package org.brandao.concurrent;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashSet;
@@ -148,7 +149,12 @@ class DisposableSingletonContext<T> {
 
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
-		return method.invoke(object, args);
+		try{
+			return method.invoke(object, args);
+		}
+		catch(InvocationTargetException e){
+			throw e.getTargetException();
+		}
 	}
 
 	protected void finalize() throws Throwable{
