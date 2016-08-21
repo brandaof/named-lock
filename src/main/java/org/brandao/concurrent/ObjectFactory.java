@@ -1,6 +1,6 @@
 package org.brandao.concurrent;
 
-public interface ObjectFactory {
+interface ObjectFactory {
 
 	Object createInstance();
 	
