@@ -15,7 +15,7 @@ public class NamedLockFactoryTest  extends TestCase{
 		NamedLockFactory namedLock = new NamedLockFactory();
 		
 		Lock lock = namedLock.getLock("teste");
-		
+		lock.lock();
 		try{
 			new Thread(new NamedLockFactoryHelper.AsyncLock(namedLock, "teste", queue)).start();
 			Thread.sleep(2000);
@@ -39,6 +39,7 @@ public class NamedLockFactoryTest  extends TestCase{
 		NamedLockFactory namedLock = new NamedLockFactory();
 		
 		Lock lock = namedLock.getLock("teste");
+		lock.lock();
 		try{
 			new Thread(new NamedLockFactoryHelper.AsyncLock(namedLock, "teste2", queue)).start();
 			Thread.sleep(2000);
@@ -61,6 +62,7 @@ public class NamedLockFactoryTest  extends TestCase{
 		NamedLockFactory namedLock = new NamedLockFactory();
 		
 		Lock lock = namedLock.getLock("teste");
+		lock.lock();
 		try{
 			new Thread(new NamedLockFactoryHelper.AsyncTryLock(namedLock, "teste", queue)).start();
 			Thread.sleep(2000);
@@ -83,6 +85,7 @@ public class NamedLockFactoryTest  extends TestCase{
 		NamedLockFactory namedLock = new NamedLockFactory();
 		
 		Lock lock = namedLock.getLock("teste");
+		lock.lock();
 		try{
 			new Thread(new NamedLockFactoryHelper.AsyncTryLock(namedLock, "teste2", queue)).start();
 			Thread.sleep(2000);
@@ -105,6 +108,7 @@ public class NamedLockFactoryTest  extends TestCase{
 		NamedLockFactory namedLock = new NamedLockFactory();
 		
 		Lock lock = namedLock.getLock("teste");
+		lock.lock();
 		try{
 			new Thread(new NamedLockFactoryHelper.AsyncTryLockTime(namedLock, "teste", queue, 3000, TimeUnit.MILLISECONDS)).start();
 			Thread.sleep(2000);
@@ -127,6 +131,7 @@ public class NamedLockFactoryTest  extends TestCase{
 		NamedLockFactory namedLock = new NamedLockFactory();
 		
 		Lock lock = namedLock.getLock("teste");
+		lock.lock();
 		try{
 			new Thread(new NamedLockFactoryHelper.AsyncTryLockTime(namedLock, "teste2", queue, 3000, TimeUnit.MILLISECONDS)).start();
 			Thread.sleep(2000);
@@ -150,6 +155,7 @@ public class NamedLockFactoryTest  extends TestCase{
 		NamedLockFactory namedLock = new NamedLockFactory();
 		
 		Lock lock = namedLock.getLock("teste");
+		lock.lock();
 		try{
 			new Thread(new NamedLockFactoryHelper.AsyncTryLockTime(namedLock, "teste", queue, 500, TimeUnit.MILLISECONDS)).start();
 			Thread.sleep(2000);
@@ -172,6 +178,7 @@ public class NamedLockFactoryTest  extends TestCase{
 		NamedLockFactory namedLock = new NamedLockFactory();
 		
 		Lock lock = namedLock.getLock("teste");
+		lock.lock();
 		try{
 			new Thread(new NamedLockFactoryHelper.AsyncTryLockTime(namedLock, "teste2", queue, 500, TimeUnit.MILLISECONDS)).start();
 			Thread.sleep(2000);
@@ -194,10 +201,12 @@ public class NamedLockFactoryTest  extends TestCase{
 		List<Integer> queue = new ArrayList<Integer>();
 		NamedLockFactory namedLock = new NamedLockFactory();
 		
-		Lock lock = namedLock.getLock("teste");
 		NamedLockFactoryHelper.AsyncLockInterruptibly task = 
 				new NamedLockFactoryHelper.AsyncLockInterruptibly(namedLock, "teste", queue);
 		Thread th = new Thread(task);
+
+		Lock lock = namedLock.getLock("teste");
+		lock.lock();
 		try{
 			th.start();
 			Thread.sleep(2000);
@@ -220,10 +229,12 @@ public class NamedLockFactoryTest  extends TestCase{
 		List<Integer> queue = new ArrayList<Integer>();
 		NamedLockFactory namedLock = new NamedLockFactory();
 		
-		Lock lock = namedLock.getLock("teste");
 		NamedLockFactoryHelper.AsyncLockInterruptibly task = 
 				new NamedLockFactoryHelper.AsyncLockInterruptibly(namedLock, "teste2", queue);
 		Thread th = new Thread(task);
+		
+		Lock lock = namedLock.getLock("teste");
+		lock.lock();
 		try{
 			th.start();
 			Thread.sleep(2000);
@@ -246,10 +257,12 @@ public class NamedLockFactoryTest  extends TestCase{
 		List<Integer> queue = new ArrayList<Integer>();
 		NamedLockFactory namedLock = new NamedLockFactory();
 		
-		Lock lock = namedLock.getLock("teste");
 		NamedLockFactoryHelper.AsyncLockInterruptibly task = 
 				new NamedLockFactoryHelper.AsyncLockInterruptibly(namedLock, "teste", queue);
 		Thread th = new Thread(task);
+		
+		Lock lock = namedLock.getLock("teste");
+		lock.lock();
 		try{
 			th.start();
 			Thread.sleep(2000);
