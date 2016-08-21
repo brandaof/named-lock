@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.brandao</groupId>
 	<artifactId>named-lock</artifactId>
-	<version>1.0-b1</version>
+	<version>1.0-b2</version>
 
 	<name>Named lock</name>
 	<url>http://namedlock.brandao.org/</url>
@@ -129,5 +129,5 @@
 		</dependency>
 	</dependencies>
 
-	<description>Named lock.</description>
+	<description>The named-lock is a small Java library to manipulate name based locks.</description>
 </project>
