@@ -18,6 +18,7 @@
 package org.brandao.concurrent;
 
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Provê bloqueadores baseados em nomes.

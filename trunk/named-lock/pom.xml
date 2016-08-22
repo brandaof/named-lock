@@ -129,5 +129,5 @@
 		</dependency>
 	</dependencies>
 
-	<description>The named-lock is a small Java library to manipulate name based locks.</description>
+	<description>The named-lock is a utility for acquiring named locks.</description>
 </project>
